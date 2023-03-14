@@ -20,28 +20,29 @@
     letter-spacing: 1px;
 }
 
-.presupuestostHead tr{
+
+.presupuestostHead tr {
     justify-content: center;
     font-weight: bolder;
     font-size: 14px;
 }
 
-.center{
+.center {
     text-align: center;
 }
 
-.presupuestostFoot tr{
+.presupuestostFoot tr {
     grid-template-columns: 2fr 2fr 4fr 2fr;
     font-weight: bold;
 }
 
-.presupuestostFoot tr th:nth-last-child(2){
+.presupuestostFoot tr th:nth-last-child(2) {
     font-weight: 800;
     font-size: 14px;
 }
 
 
-.textPEsoTotal{
+.textPEsoTotal {
     background-color: #0baeae;
     padding: 10px;
     color: white;
@@ -49,7 +50,8 @@
     margin-bottom: 1rem;
     border-radius: 2px;
 }
-.textPEsoTotal span{
+
+.textPEsoTotal span {
     font-size: 14px;
     font-weight: bold;
 }
@@ -66,15 +68,18 @@
     border-radius: 2px;
 }
 
-.textExtra{
+.textExtra {
     text-align: center;
     font-size: 10px;
     letter-spacing: 1px;
 }
 
-
 @media (max-width: 750px) {
-    .data{ 
+    .data {
+        overflow-x: scroll;
+    }
+
+    .scroll {
         overflow-x: scroll;
     }
 }
