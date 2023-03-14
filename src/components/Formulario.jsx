@@ -36,8 +36,8 @@ export const Formulario = () => {
   const [origen, setOrigen] = React.useState("");
   const [allCategoria, setAllCategoria] = React.useState(null);
   const [valores, SetValores] = React.useState({
-    USD: 0,
-    peso: 0,
+    USD: parseInt(""),
+    peso: parseInt(""),
   });
   const { Message, All } = useSelector((state) => state.calculadora);
 
@@ -46,6 +46,7 @@ export const Formulario = () => {
   return (
     <form className="calculadoraForm">
       <Select
+        defaultValue={0}
         options={pais}
         placeholder="Select::"
         className="pais"
@@ -56,6 +57,7 @@ export const Formulario = () => {
         <>
           <div className="calculadoraDatos animate__animated animate__bounceInUp">
             <input
+              id="USD"
               type="number"
               placeholder="Ingresa el valor en USD"
               onChange={(e) =>
@@ -64,6 +66,7 @@ export const Formulario = () => {
                   USD: parseInt(e.target.value),
                 })
               }
+              value={valores.USD}
             />
             <input
               type="number"
@@ -74,6 +77,7 @@ export const Formulario = () => {
                   peso: parseInt(e.target.value),
                 })
               }
+              value={valores.peso}
             />
             <Select
               options={Origen}
@@ -98,7 +102,11 @@ export const Formulario = () => {
                 })
               }
               isDisabled={
-                valores?.USD === 0 || valores?.peso === 0 || origen === ""
+                valores?.USD === 0 ||
+                isNaN(valores?.USD) ||
+                isNaN(valores?.peso) ||
+                valores?.peso === 0 ||
+                origen === ""
                   ? true
                   : false
               }
@@ -126,7 +134,10 @@ export const Formulario = () => {
                 }
 
                 dispatch(addValoresENvios(allCategoria));
-                SetValores(null);
+                SetValores({
+                  USD: parseInt(""),
+                  peso: parseInt(""),
+                });
               }}
             >
               Agregar Item
@@ -137,7 +148,6 @@ export const Formulario = () => {
                 e.preventDefault();
                 dispatch(reset());
                 setPaisSelect("");
-                SetValores(null);
               }}
             >
               Reiniciar

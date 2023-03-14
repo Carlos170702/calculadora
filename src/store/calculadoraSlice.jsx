@@ -14,9 +14,7 @@ export const CalculadoraSlice = createSlice({
   reducers: {
     addValoresENvios: (state, { payload }) => {
       const exist = state.All.find(
-        (item) =>
-          item.concept === payload.concept &&
-          item.originValue === payload.originValue
+        (item) => item.concepto === payload.concepto
       );
 
       if (exist !== undefined) {
