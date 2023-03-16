@@ -15,42 +15,115 @@ const pais = [
 ];
 
 const categoria = [
-  { value: "notebook", label: "notebook", porcentaje: 50 },
-  { value: "Acc. buceo", label: "Acc. buceo", porcentaje: 30 },
+  {
+    value: "notebook",
+    label: "notebook",
+    porcentaje: 50,
+    porcentajeRepublica: 10,
+  },
+  {
+    value: "Acc. buceo",
+    label: "Acc. buceo",
+    porcentaje: 30,
+    porcentajeRepublica: 10,
+  },
   {
     value: "Acc. de camara fotografíca",
     label: "Acc. de camara fotografíca",
     porcentaje: 20,
+    porcentajeRepublica: 10,
   },
   {
     value: "Acc. de computación",
     label: "Acc. de computación",
     porcentaje: 60,
+    porcentajeRepublica: 10,
   },
-  { value: "Acc. de fotografía", label: "Acc. de computación", porcentaje: 70 },
+  {
+    value: "Acc. de fotografía",
+    label: "Acc. de computación",
+    porcentaje: 70,
+    porcentajeRepublica: 10,
+  },
 ];
 
 export const Formulario = () => {
   const dispatch = useDispatch();
   const [paisSelect, setPaisSelect] = React.useState("");
   const [origen, setOrigen] = React.useState("");
-  const [allCategoria, setAllCategoria] = React.useState(null);
+  const [categori, setCategori] = React.useState("");
   const [valores, SetValores] = React.useState({
-    USD: parseInt(""),
-    peso: parseInt(""),
+    USD: "",
+    peso: "",
   });
   const { Message, All } = useSelector((state) => state.calculadora);
 
-  console.log(valores);
+  const handleCalcular = () => {
+    if (
+      paisSelect === "" ||
+      valores.USD === "" ||
+      valores.peso === "" ||
+      origen === "" ||
+      categori === ""
+    ) {
+      dispatch(setMessage());
+      return;
+    }
+
+    SetValores({ USD: "", peso: "" });
+
+    return {
+      concepto: categori?.value,
+      valor: valores.USD,
+      peso: valores.peso,
+      inpuesto: valores.USD * handleValorInpuestos(),
+      valorOrigen: handleValorOrigen(),
+    };
+  };
+
+  const handleDesableCategory = () => {
+    return valores?.USD === 0 ||
+      valores?.USD === "" ||
+      valores?.peso === "" ||
+      origen === ""
+      ? true
+      : false;
+  };
+
+  const handleAddGlobalStore = (data) => {
+    dispatch(addValoresENvios(data));
+  };
+
+  //* aqui es donde tu configuraras lo de el flete man pero antes de eso necesitas agregar los nuevos origenes al array de ariva origen
+  const handleValorOrigen = () => {
+    //* aqui es donde haces la condicion de que pais es el que seleccion y de ahi hacer condicion de el origen para que le pongas el valor dependiendo al origen
+    if (paisSelect === "Argentina") {
+      return origen === "Miami" ? 18 : 35; //* aqui es donde le pondras es valor 
+    }
+
+    if (paisSelect === "Republica Dominicana") {
+      return 3.99;
+    }
+  };
+
+  const handleValorInpuestos = () => {
+    if (paisSelect === "Republica Dominicana") {
+      return categori?.porcentajeRepublica / 100;
+    }
+
+    if (paisSelect === "Argentina") {
+      return categori?.porcentaje / 100;
+    }
+  };
 
   return (
     <form className="calculadoraForm">
       <Select
-        defaultValue={0}
         options={pais}
         placeholder="Select::"
         className="pais"
-        onChange={({ value }) => setPaisSelect(value)}
+        isClearable
+        onChange={(e) => setPaisSelect(e?.value)}
       />
 
       {!!paisSelect && (
@@ -81,7 +154,7 @@ export const Formulario = () => {
             />
             <Select
               options={Origen}
-              placeholder=":: Origen ::"
+              placeholder=":: Origen :: "
               onChange={({ value }) => setOrigen(value)}
             />
           </div>
@@ -92,28 +165,16 @@ export const Formulario = () => {
               placeholder=":: Categoria de producto ::"
               defaultValue=":: Categoria de producto ::"
               className="appear animate__animated animate__bounceInUp"
-              onChange={({ value, porcentaje }) =>
-                setAllCategoria({
-                  concepto: value,
-                  valor: valores.USD,
-                  peso: valores.peso,
-                  inpuesto: valores.USD * (porcentaje / 100),
-                  valorOrigen: origen === "Miami" ? 18 : 35,
-                })
-              }
-              isDisabled={
-                valores?.USD === 0 ||
-                isNaN(valores?.USD) ||
-                isNaN(valores?.peso) ||
-                valores?.peso === 0 ||
-                origen === ""
-                  ? true
-                  : false
-              }
+              onChange={(e) => {
+                setCategori(e);
+              }}
+              isDisabled={handleDesableCategory()}
             />
           </div>
           {Message.status && (
-            <h4 className="Formulario__Datos_Incompletos">{Message.message}</h4>
+            <h4 className="Formulario__Datos_Incompletos animate__animated animate__bounceInRight">
+              {Message.message}
+            </h4>
           )}
 
           <div className="CalculadoracontentBtn animate__animated animate__bounceInUp">
@@ -122,26 +183,13 @@ export const Formulario = () => {
               type="submit"
               onClick={(e) => {
                 e.preventDefault();
-                if (
-                  paisSelect === "" ||
-                  valores.USD === 0 ||
-                  valores.peso === 0 ||
-                  origen === "" ||
-                  allCategoria === null
-                ) {
-                  dispatch(setMessage());
-                  return;
-                }
-
-                dispatch(addValoresENvios(allCategoria));
-                SetValores({
-                  USD: parseInt(""),
-                  peso: parseInt(""),
-                });
+                const response = handleCalcular();
+                !!response && handleAddGlobalStore(response);
               }}
             >
               Agregar Item
             </button>
+
             <button
               className="btn"
               onClick={(e) => {

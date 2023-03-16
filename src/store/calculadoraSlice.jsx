@@ -13,17 +13,17 @@ export const CalculadoraSlice = createSlice({
   initialState: initial,
   reducers: {
     addValoresENvios: (state, { payload }) => {
-      const exist = state.All.find(
-        (item) => item.concepto === payload.concepto
-      );
+      // const exist = state.All.find(
+      //   (item) => item.concepto === payload.concepto
+      // );
 
-      if (exist !== undefined) {
-        state.Message = {
-          message: "Categoria existente",
-          status: true,
-        };
-        return;
-      }
+      // if (exist !== undefined) {
+      //   state.Message = {
+      //     message: "Categoria existente",
+      //     status: true,
+      //   };
+      //   return;
+      // }
 
       state.All = [...state.All, payload];
       state.Message = {
